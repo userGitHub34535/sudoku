@@ -23,20 +23,34 @@ cl = [0] * 30 #column. This array records whether the column (at the correspondi
 
 #this part works as follows: we're going to iterate through the columns. For a particular column,...
 #we're going to iterate through the rows. We try  
-col = 0
-if col>N:
 
+def main(board, col):
+    if col >=N:
+        return True
     for i in range(N):  #where i represents the row, i.e. we're iterating through the rows
         if( ld[i - col + N-1] != 1 #no other queens in the same leftDiagonal
             and rd[i + col]   != 1 #no other queens in the same rightDiagonal
-            and cl[col]       != 1 #no other queens in the same column #todo-why use cl[i]? 
+            and cl[i]         != 1 #no other queens in the same column #todo-why use cl[i]? 
             ):
 
             ld[i - col + N-1] = 1 #update the ld flag
             rd[i + col]       = 1 #update the rd flag
-            cl[col]           = 1 #update the cl flag
-            
-            
-    col +=1
+            cl[i]             = 1 #update the cl flag
+            board[i][col]     = 1 #update the board
 
-#todo - print("There's no solution for this problem")
+
+            if (main(board, col+1)):  #loop again and place next queen in next col
+                return True
+                         
+            # else backtrack 
+            ld[i - col + N-1] = 0 #update the ld flag
+            rd[i + col]       = 0 #update the rd flag
+            cl[i]             = 0 #update the cl flag
+            board[i][col]     = 0 #update the board
+
+    #print("There's no solution for col", col)
+    return False
+
+main(board, 0)
+print('\n'.join(str(board[i]) for i in range(N)))
+
